@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#060a0d">
+  <title>DRISHTI · Edge-AI Driver Safety</title>
+  <link rel="icon" href="/static/img/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/cockpit.css">
+  <link rel="stylesheet" href="/static/css/cockpit-lower.css">
+  <link rel="stylesheet" href="/static/css/operations.css">
+  <link rel="stylesheet" href="/static/css/analytics.css">
+  <link rel="stylesheet" href="/static/css/copilot.css">
+  <link rel="stylesheet" href="/static/css/overlays.css">
+  <link rel="stylesheet" href="/static/css/responsive.css">
+</head>
+<body>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="/" aria-label="DRISHTI home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="presentation">
+            <path d="M7 15V8h7M34 8h7v7M41 33v7h-7M14 40H7v-7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+            <path d="M10 24c4.8-6.8 9.4-10 14-10s9.2 3.2 14 10c-4.8 6.8-9.4 10-14 10S14.8 30.8 10 24Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="24" cy="24" r="4.4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="24" cy="24" r="1.4" fill="currentColor"/>
+            <path d="M24 6v4M24 38v4M6 24h3M39 24h3" stroke="currentColor" stroke-width="1.2" opacity=".5"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <span class="brand-name">DRISHTI</span>
+          <span class="brand-sub">EDGE-AI DRIVER SAFETY</span>
+        </span>
+      </a>
+
+      <div class="sidebar-mission">
+        <span class="micro-label">VEHICLE SAFETY PROGRAM</span>
+        <span class="mission-name">Bihar Mobility<br>Demonstration 2026</span>
+        <span class="venue-line"><i></i> Patna exhibition node</span>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-label">OPERATIONS</span>
+        <nav class="primary-nav" aria-label="Primary">
+          <button class="nav-item is-active" data-view="cockpit" type="button">
+            <span class="nav-icon"><svg class="icon"><use href="#i-grid"/></svg></span>
+            <span class="nav-text">Live cockpit<small>Cabin command</small></span>
+            <span class="nav-index">01</span>
+          </button>
+          <button class="nav-item" data-view="response" type="button">
+            <span class="nav-icon"><svg class="icon"><use href="#i-shield"/></svg></span>
+            <span class="nav-text">Response ops<small>Incident &amp; agencies</small></span>
+            <span class="nav-index">02</span>
+            <span class="nav-badge" id="responseBadge" hidden>1</span>
+          </button>
+          <button class="nav-item" data-view="analytics" type="button">
+            <span class="nav-icon"><svg class="icon"><use href="#i-chart"/></svg></span>
+            <span class="nav-text">Session analytics<small>Trends &amp; audit</small></span>
+            <span class="nav-index">03</span>
+          </button>
+          <button class="nav-item" data-view="copilot" type="button">
+            <span class="nav-icon"><svg class="icon"><use href="#i-spark"/></svg></span>
+            <span class="nav-text">DRISHTI copilot<small>Tactical reasoning</small></span>
+            <span class="nav-index">04</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-unit card-inset">
+        <div class="unit-top">
+          <span class="micro-label">ASSIGNED UNIT</span>
+          <span class="dot dot-live" id="sidebarUnitDot"></span>
+        </div>
+        <strong class="unit-id">{{ vehicle_id }}</strong>
+        <div class="unit-meta">
+          <span>EDGE NODE 01</span>
+          <span id="sidebarEngine">ENGINE RUNNING</span>
+        </div>
+        <div class="unit-bars" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+      </div>
+
+      <div class="sidebar-spacer"></div>
+
+      <button class="system-link" id="openSystem" type="button">
+        <span class="system-link-icon"><svg class="icon"><use href="#i-sliders"/></svg></span>
+        <span>
+          <strong>System &amp; hardware</strong>
+          <small><span id="hardwareShort">SIMULATED OUTPUTS</span></small>
+        </span>
+        <svg class="icon chevron"><use href="#i-chevron"/></svg>
+      </button>
+
+      <div class="sidebar-foot">
+        <span>DMS/1 · v{{ version }}</span>
+        <span class="lamp" title="Console online"></span>
+        <span id="uptimeShort">00:00:00</span>
+      </div>
+    </aside>
+
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="topbar-heading">
+          <div class="topbar-kicker">
+            <span class="kicker-line"></span>
+            BIHAR MOBILITY / VEHICLE SAFETY
+          </div>
+          <div class="title-line">
+            <h1 id="pageTitle">Live cockpit</h1>
+            <span class="title-separator"></span>
+            <span class="page-subtitle" id="pageSubtitle">Edge-AI cabin observation</span>
+          </div>
+        </div>
+
+        <div class="topbar-tools">
+          <div class="link-pill" id="linkPill" title="Edge inference link">
+            <span class="signal-wave" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span><b id="linkMode">DEMO LINK</b><small id="linkLatency">18 ms · EDGE</small></span>
+          </div>
+          <div class="clock-block">
+            <span class="clock-time" id="clockTime">14:32:09</span>
+            <span class="clock-date" id="clockDate">23 OCT 2026</span>
+          </div>
+          <div class="operator-pill" title="Active command context">
+            <span class="operator-avatar">NK</span>
+            <span class="operator-copy"><small>COMMAND ROLE</small><b>GUARDIAN</b></span>
+            <span class="operator-live">LIVE</span>
+          </div>
+          <button class="icon-button notification-button" id="notificationButton" type="button" aria-label="Open response operations">
+            <svg class="icon"><use href="#i-bell"/></svg>
+            <span class="notification-count" id="notificationCount" hidden>0</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="main-canvas">
+        <!-- ============================================================ COCKPIT -->
+        <section class="view is-active" data-panel="cockpit" id="view-cockpit">
+          <div class="telemetry-strip card">
+            <div class="unit-lockup">
+              <span class="unit-symbol"><svg class="icon"><use href="#i-car"/></svg></span>
+              <div>
+                <span class="micro-label">ACTIVE UNIT / DMS-01</span>
+                <div class="unit-title-row"><b>{{ vehicle_id }}</b><span class="unit-grade">EXP</span></div>
+              </div>
+            </div>
+            <div class="strip-rule"></div>
+            <div class="strip-stat">
+              <span class="micro-label">VELOCITY</span>
+              <div class="strip-value"><strong id="speedValue">42.0</strong><em>KM/H</em></div>
+              <span class="strip-sub" id="speedSub">Cruise · stable</span>
+            </div>
+            <div class="strip-stat">
+              <span class="micro-label">POWERTRAIN</span>
+              <div class="strip-engine"><span class="status-lamp" id="engineLamp"></span><strong id="engineValue">RUNNING</strong></div>
+              <span class="strip-sub">Remote interlock ready</span>
+            </div>
+            <div class="strip-stat strip-location">
+              <span class="micro-label">LOCATION / GPS LOCK</span>
+              <div class="location-value"><svg class="icon"><use href="#i-pin"/></svg><strong id="locationValue">State Science &amp; Tech Pavilion</strong></div>
+              <span class="strip-sub" id="coordsValue">25.6193° N · 85.1415° E</span>
+            </div>
+            <div class="strip-stat strip-network">
+              <span class="micro-label">UPLINK</span>
+              <div class="network-value"><span class="signal-bars" id="signalBars"><i></i><i></i><i></i><i></i></span><strong>HOTSPOT</strong></div>
+              <span class="strip-sub" id="latencyValue">18 ms · GPS ±4.2 m</span>
+            </div>
+            <button class="map-jump" id="venueButton" type="button" aria-label="Open venue route">
+              <svg class="icon"><use href="#i-arrow-up-right"/></svg>
+            </button>
+          </div>
+
+          <div class="cockpit-grid">
+            <section class="card vision-card">
+              <header class="card-head">
+                <div class="card-title">
+                  <span class="eyebrow"><span class="eyebrow-index">01</span>VISION PIPELINE / CAM 01</span>
+                  <h2>Cabin observation</h2>
+                </div>
+                <div class="head-actions">
+                  <span class="mini-status" id="visionSourceChip"><i class="dot"></i> SYNTHETIC</span>
+                  <button class="icon-button compact" id="expandVision" type="button" aria-label="Expand camera view">
+                    <svg class="icon"><use href="#i-expand"/></svg>
+                  </button>
+                </div>
+              </header>
+
+              <div class="vision-stage" id="visionStage">
+                <canvas id="visionCanvas" aria-label="Animated synthetic cabin vision feed"></canvas>
+                <img id="liveFeed" class="live-feed" alt="Live driver camera with face landmark overlay" hidden>
+                <div class="vision-grid-overlay" aria-hidden="true"></div>
+                <div class="vision-vignette" aria-hidden="true"></div>
+                <div class="vision-scan" aria-hidden="true"></div>
+                <div class="vision-top-overlay">
+                  <span class="rec-chip" id="feedModeChip"><i></i> SIMULATION FEED</span>
+                  <span class="hud-chip">NIR <b id="visionIrMode">SYN</b></span>
+                  <span class="hud-chip">468 PT</span>
+                  <span class="vision-timestamp" id="visionTimestamp">00:00:00.000</span>
+                </div>
+                <div class="vision-side-label left" aria-hidden="true">CABIN / FRONT ROW</div>
+                <div class="vision-side-label right" aria-hidden="true">INFRARED · EDGE</div>
+                <div class="face-lock-card" id="faceLockCard">
+                  <span class="face-lock-icon"><svg class="icon"><use href="#i-user"/></svg></span>
+                  <span><small>DRIVER ID</small><b>OPERATOR 01</b></span>
+                  <span class="lock-confidence"><i></i><em id="visionConfidence">98.4</em>%</span>
+                </div>
+                <div class="vision-command">
+                  <span class="vision-command-label">EYES</span>
+                  <strong id="visionEyeState">OPEN</strong>
+                  <span class="vision-command-line"></span>
+                  <span class="vision-command-label">HEAD</span>
+                  <strong id="visionHeadState">FORWARD</strong>
+                </div>
+                <div class="vision-alert-tag" id="visionAlertTag" hidden>
+                  <svg class="icon"><use href="#i-alert"/></svg>
+                  <span id="visionAlertText">DROWSINESS THRESHOLD</span>
+                </div>
+                <div class="vision-no-face" id="visionNoFace" hidden>
+                  <svg class="icon"><use href="#i-eye-off"/></svg>
+                  <strong>Face lock pending</strong>
+                  <span>Align the driver with CAM 01</span>
+                </div>
+                <div class="feed-stats">
+                  <span><em>FPS</em><b id="visionFps">30.0</b></span>
+                  <span><em>INFERENCE</em><b id="visionInference">18.6 ms</b></span>
+                  <span><em>RESOLUTION</em><b>1280 × 720</b></span>
+                  <span class="feed-live-state"><i class="dot"></i><b id="feedLiveLabel">SIMULATED</b></span>
+                </div>
+              </div>
+
+              <footer class="vision-footer">
+                <div class="vision-model">
+                  <span class="model-orbit"><svg class="icon"><use href="#i-vision"/></svg></span>
+                  <span><small>ON-DEVICE MODEL</small><strong>FaceLandmarker · RF-EDGE</strong></span>
+                </div>
+                <div class="vision-actions">
+                  <button class="ghost-button small" id="snapshotButton" type="button">
+                    <svg class="icon"><use href="#i-snapshot"/></svg> Snapshot
+                  </button>
+                  <button class="outline-button small" id="visionToggle" type="button">
+                    <span class="button-dot"></span><span id="visionToggleText">Enable live vision</span>
+                  </button>
+                </div>
+              </footer>
+            </section>
+
+            <section class="card driver-card">
+              <header class="card-head">
+                <div class="card-title">
+                  <span class="eyebrow"><span class="eyebrow-index">02</span>BIOMETRIC FUSION</span>
+                  <h2>Driver state</h2>
+                </div>
+                <div class="auto-chip" id="decisionModeChip">
+                  <span class="auto-spark"></span> AUTO DECISION
+                </div>
+              </header>
+
+              <div class="driver-hero">
+                <div class="attention-orbit" id="attentionOrbit">
+                  <svg viewBox="0 0 220 220" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="attentionGrad" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#72f0d2"/>
+                        <stop offset=".58" stop-color="#31cdb0"/>
+                        <stop offset="1" stop-color="#1a877f"/>
+                      </linearGradient>
+                      <linearGradient id="attentionWarm" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#ffd27a"/>
+                        <stop offset="1" stop-color="#f5963d"/>
+                      </linearGradient>
+                      <linearGradient id="attentionDanger" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#ff8b85"/>
+                        <stop offset="1" stop-color="#e83f4b"/>
+                      </linearGradient>
+                    </defs>
+                    <circle class="orbit-track" cx="110" cy="110" r="90"/>
+                    <circle class="orbit-track inner" cx="110" cy="110" r="76"/>
+                    <g class="orbit-ticks" id="orbitTicks"></g>
+                    <circle class="orbit-progress" id="attentionArc" cx="110" cy="110" r="90" pathLength="100"/>
+                    <circle class="orbit-cap" id="attentionCap" cx="110" cy="110" r="90" pathLength="100"/>
+                  </svg>
+                  <div class="orbit-center">
+                    <span class="orbit-kicker">ATTENTION</span>
+                    <strong id="attentionValue">86</strong>
+                    <span class="orbit-scale">/ 100</span>
+                    <span class="orbit-delta" id="attentionDelta">STABLE</span>
+                  </div>
+                </div>
+
+                <div class="state-summary">
+                  <div class="state-tag-row">
+                    <span class="state-tag" id="driverStateTag"><i></i> ATTENTIVE</span>
+                    <span class="face-mini"><svg class="icon"><use href="#i-eye"/></svg> FACE LOCK</span>
+                  </div>
+                  <h3 id="driverHeadline">Driver responsive</h3>
+                  <p id="driverDescription">Eyes on road. Cognitive load is within the calibrated safe band.</p>
+                  <div class="risk-row">
+                    <div class="risk-label"><span>FATIGUE PROBABILITY</span><b id="fatigueValue">19%</b></div>
+                    <div class="risk-track"><span id="fatigueBar"></span><i class="risk-threshold" style="left:55%"></i><i class="risk-threshold danger" style="left:75%"></i></div>
+                    <div class="risk-scale"><span>NOMINAL</span><span>ALERT</span><span>CRITICAL</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="metric-triad">
+                <div class="metric-cell">
+                  <span class="metric-name">EAR <small>/ EYE APERTURE</small></span>
+                  <strong id="earValue">0.305</strong>
+                  <span class="metric-note" id="earNote">Open · within band</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-name">MAR <small>/ MOUTH</small></span>
+                  <strong id="marValue">0.18</strong>
+                  <span class="metric-note" id="marNote">Relaxed</span>
+                </div>
+                <div class="metric-cell">
+                  <span class="metric-name">HEAD POSE <small>/ 3D</small></span>
+                  <strong id="headValue">−3.6°</strong>
+                  <span class="metric-note" id="headNote">Yaw · pitch +2.8°</span>
+                </div>
+              </div>
+
+              <div class="escalation-panel">
+                <div class="escalation-heading">
+                  <span>SAFETY ESCALATION</span>
+                  <b id="stageLabel">LEVEL 0 · MONITOR</b>
+                </div>
+                <div class="escalation-track" id="escalationTrack" aria-label="Safety escalation levels">
+                  <div class="escalation-rail"><span id="escalationFill"></span></div>
+                  <button class="esc-step is-active" data-stage="0" type="button"><i>0</i><span>Monitor</span><small>EYE</small></button>
+                  <button class="esc-step" data-stage="1" type="button"><i>1</i><span>Advisory</span><small>HUD</small></button>
+                  <button class="esc-step" data-stage="2" type="button"><i>2</i><span>Alert</span><small>D9</small></button>
+                  <button class="esc-step" data-stage="3" type="button"><i>3</i><span>Haptic</span><small>D5</small></button>
+                  <button class="esc-step" data-stage="4" type="button"><i>4</i><span>Emergency</span><small>CUT</small></button>
+                </div>
+                <div class="escalation-foot">
+                  <span><i class="mini-check"></i><b id="stageAction">No intervention required</b></span>
+                  <span id="stageRule">Risk &lt; 30%</span>
+                </div>
+              </div>
+
+              <div class="driver-actions">
+                <button class="primary-button demo-button" id="demoButton" type="button">
+                  <span class="demo-icon"><svg class="icon"><use href="#i-play"/></svg></span>
+                  <span><b>Run fatigue demo</b><small>46-second safety cascade</small></span>
+                  <span class="demo-progress" id="demoProgress" hidden><i id="demoProgressBar"></i></span>
+                </button>
+                <button class="outline-button square" id="stopDemoButton" type="button" aria-label="Stop demo" disabled>
+                  <svg class="icon"><use href="#i-stop"/></svg>
+                </button>
+                <button class="outline-button square" id="ackButton" type="button" aria-label="Acknowledge all events">
+                  <svg class="icon"><use href="#i-check-double"/></svg>
+                </button>
+              </div>
+            </section>
+
+            <section class="card trend-card">
+              <header class="card-head compact-head">
+                <div class="card-title">
+                  <span class="eyebrow"><span class="eyebrow-index">03</span>LIVE BIOMETRICS</span>
+                  <h2>Signal stream</h2>
+                </div>
+                <div class="chart-legend" id="chartLegend">
+                  <button class="legend-item is-active" data-series="ear" type="button"><i class="teal"></i>EAR</button>
+                  <button class="legend-item is-active" data-series="mar" type="button"><i class="amber"></i>MAR</button>
+                  <span class="chart-window">30 SEC</span>
+                </div>
+              </header>
+              <div class="trend-values">
+                <div><span>EAR</span><b id="trendEar">0.305</b><small>thr. 0.230</small></div>
+                <div><span>MAR</span><b id="trendMar">0.18</b><small>thr. 0.650</small></div>
+                <div><span>FATIGUE RISK</span><b id="trendRisk">19%</b><small>30 / 55 / 75</small></div>
+              </div>
+              <div class="chart-wrap">
+                <canvas id="trendChart" aria-label="Live EAR and MAR trend chart"></canvas>
+                <span class="chart-y-label">0.45</span>
+                <span class="chart-y-label bottom">0.00</span>
+              </div>
+              <footer class="chart-foot">
+                <span><i class="pulse-dot"></i> LIVE · 2 Hz</span>
+                <span id="chartStatusLine">Thresholds nominal</span>
+              </footer>
+            </section>
+
+            <section class="card actuator-card">
+              <header class="card-head compact-head">
+                <div class="card-title">
+                  <span class="eyebrow"><span class="eyebrow-index">04</span>ACTUATION BUS</span>
+                  <h2>Physical outputs</h2>
+                </div>
+                <button class="mode-button" id="actuatorModeButton" type="button" title="Switch between automatic safety guard and manual override">
+                  <i></i><span id="actuatorModeLabel">AUTO</span>
+                </button>
+              </header>
+
+              <div class="actuator-list">
+                <div class="actuator-row" id="alertOutputRow">
+                  <span class="output-icon"><svg class="icon"><use href="#i-bell"/></svg></span>
+                  <div class="output-copy">
+                    <strong>Cabin alert</strong>
+                    <small>BUZZER + LED <span>·</span> D9 SHARED</small>
+                  </div>
+                  <span class="waveform" id="alertWave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+                  <button class="toggle-switch" id="alertToggle" type="button" role="switch" aria-checked="false" aria-label="Cabin alert output">
+                    <span></span>
+                  </button>
+                </div>
+
+                <div class="actuator-row motor-row" id="motorOutputRow">
+                  <span class="output-icon"><svg class="icon"><use href="#i-wheel"/></svg></span>
+                  <div class="output-copy">
+                    <strong>Haptic actuator</strong>
+                    <small>L298N <span>·</span> ENA D5 / IN1 D6 / IN2 D7</small>
+                  </div>
+                  <div class="torque-readout"><strong id="motorPwmValue">0</strong><small>/255</small></div>
+                  <button class="toggle-switch" id="motorToggle" type="button" role="switch" aria-checked="false" aria-label="Haptic actuator output">
+                    <span></span>
+                  </button>
+                  <div class="torque-slider-wrap">
+                    <input type="range" id="motorRange" min="0" max="255" value="160" step="5" aria-label="Actuator PWM torque">
+                    <div class="torque-meta"><span>PWM TORQUE</span><b id="motorPercent">0%</b></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pattern-row">
+                <span class="pattern-label">PATTERN</span>
+                <span class="pattern-value"><i></i><b id="alertPattern">IDLE</b></span>
+                <span class="pin-readout">ACTIVE OUTPUTS <b id="activeOutputCount">0</b>/2</span>
+              </div>
+
+              <footer class="actuator-foot">
+                <span id="actuatorModeHint"><svg class="icon"><use href="#i-lock"/></svg> Auto guard interlocks manual controls</span>
+                <button class="text-button" id="overrideButton" type="button">Manual override <svg class="icon"><use href="#i-arrow-right"/></svg></button>
+              </footer>
+            </section>
+
+            <section class="card events-card">
+              <header class="card-head compact-head">
+                <div class="card-title">
+                  <span class="eyebrow"><span class="eyebrow-index">05</span>EVENT LEDGER</span>
+                  <h2>Recent activity</h2>
+                </div>
+                <span class="live-label"><i></i> LIVE</span>
+              </header>
+              <div class="event-list" id="eventList" aria-live="polite"></div>
+              <footer class="events-foot">
+                <button class="text-button" id="openLedgerButton" type="button">Open incident blackbox <svg class="icon"><use href="#i-arrow-right"/></svg></button>
+                <span class="event-count" id="eventCount">0 EVENTS</span>
+              </footer>
+            </section>
+          </div>
+        </section>
+
+        <!-- ============================================================ RESPONSE -->
+        <section class="view" data-panel="response" id="view-response" hidden>
+          <div class="view-intro">
+            <div>
+              <span class="eyebrow">RESPONSE OPERATIONS / MULTI-AGENCY BUS</span>
+              <h2>Incident command centre</h2>
+            </div>
+            <div class="intro-actions">
+              <span class="inline-status" id="responseInlineStatus"><i></i> ALL AGENCIES ON STANDBY</span>
+              <button class="outline-button small" id="responseDrillButton" type="button"><svg class="icon"><use href="#i-play"/></svg> Run critical drill</button>
+              <button class="outline-button small" id="resolveButton" type="button" disabled><svg class="icon"><use href="#i-check"/></svg> Resolve incident</button>
+            </div>
+          </div>
+
+          <div class="incident-banner" id="incidentBanner">
+            <div class="incident-icon"><svg class="icon"><use href="#i-shield-alert"/></svg></div>
+            <div class="incident-copy">
+              <span class="eyebrow">INCIDENT STATE</span>
+              <h3 id="incidentTitle">No active incident</h3>
+              <p id="incidentDescription">All safety layers are operating normally. Response agencies are on standby and the uplink is armed.</p>
+            </div>
+            <div class="incident-metrics">
+              <div><span>INCIDENT ID</span><b id="incidentId">—</b></div>
+              <div><span>ELAPSED</span><b id="incidentAge">00:00</b></div>
+              <div><span>DRIVER</span><b id="incidentDriver">ATTENTIVE</b></div>
+              <div><span>TELEGRAM</span><b id="incidentTelegram">ARMED</b></div>
+            </div>
+          </div>
+
+          <div class="response-grid">
+            <section class="card map-card">
+              <header class="card-head">
+                <div class="card-title">
+                  <span class="eyebrow">GEOLOCATION / VENUE NODE</span>
+                  <h2>Incident location</h2>
+                </div>
+                <a class="outline-button small" id="mapsLink" href="https://maps.google.com/?q=25.6193,85.1415" target="_blank" rel="noopener">
+                  <svg class="icon"><use href="#i-arrow-up-right"/></svg> Open route
+                </a>
+              </header>
+              <div class="map-stage">
+                <svg class="map-graphic" viewBox="0 0 900 360" preserveAspectRatio="xMidYMid slice" aria-label="Stylised venue map">
+                  <defs>
+                    <radialGradient id="mapGlow" cx="58%" cy="46%" r="55%">
+                      <stop offset="0" stop-color="#1b5c57" stop-opacity=".45"/>
+                      <stop offset="1" stop-color="#071014" stop-opacity="0"/>
+                    </radialGradient>
+                    <pattern id="mapGrid" width="60" height="60" patternUnits="userSpaceOnUse">
+                      <path d="M60 0H0V60" fill="none" stroke="#6fe4d4" stroke-opacity=".075" stroke-width="1"/>
+                    </pattern>
+                  </defs>
+                  <rect width="900" height="360" fill="#081014"/>
+                  <rect width="900" height="360" fill="url(#mapGrid)"/>
+                  <rect width="900" height="360" fill="url(#mapGlow)"/>
+                  <path d="M-30 291 C140 240 180 315 318 254 S540 208 640 148 S790 120 944 58" fill="none" stroke="#263a3d" stroke-width="37"/>
+                  <path d="M-30 291 C140 240 180 315 318 254 S540 208 640 148 S790 120 944 58" fill="none" stroke="#40575a" stroke-width="1.5" stroke-dasharray="8 7"/>
+                  <path d="M92 50 C205 114 184 158 305 184 S486 190 566 252 S744 292 918 330" fill="none" stroke="#1e3034" stroke-width="17"/>
+                  <path d="M702 -20 C664 82 674 130 615 176 S486 225 440 378" fill="none" stroke="#1b2b2e" stroke-width="10"/>
+                  <g opacity=".38" fill="none" stroke="#4b6e6f">
+                    <circle cx="578" cy="193" r="58" stroke-dasharray="3 7"/>
+                    <circle cx="578" cy="193" r="104" stroke-dasharray="2 10"/>
+                    <circle cx="578" cy="193" r="160" stroke-dasharray="2 14"/>
+                  </g>
+                  <path d="M578 193 L405 286" fill="none" stroke="#6debd4" stroke-width="2.5" stroke-dasharray="4 6"/>
+                  <g transform="translate(578 193)">
+                    <circle r="34" fill="#66ead1" opacity=".08"/>
+                    <circle r="20" fill="#66ead1" opacity=".12"/>
+                    <circle r="6.5" fill="#6df2d5"/>
+                    <circle r="13" fill="none" stroke="#6df2d5" stroke-width="1.4"/>
+                    <path d="M0 -25V-13M0 13V25M-25 0H-13M13 0H25" stroke="#6df2d5" stroke-width="1.3"/>
+                  </g>
+                  <g class="map-pulse" transform="translate(405 286)" opacity=".65">
+                    <circle r="5" fill="#ffb454"/>
+                    <circle r="14" fill="none" stroke="#ffb454" stroke-width="1"/>
+                  </g>
+                  <g fill="#799394" font-family="'JetBrains Mono', monospace" font-size="9" letter-spacing="1.2">
+                    <text x="613" y="185">STATE SCIENCE &amp; TECH</text>
+                    <text x="613" y="199">PAVILION · PATNA</text>
+                    <text x="365" y="312">DMS-01 / LAST KNOWN</text>
+                    <text x="728" y="96">NH-30</text>
+                    <text x="252" y="148">GANDHI MAIDAN</text>
+                    <text x="74" y="330">25.6193° N</text>
+                    <text x="670" y="330">85.1415° E</text>
+                  </g>
+                  <g fill="#426365" font-family="'JetBrains Mono', monospace" font-size="8">
+                    <text x="40" y="30">VENUE LOCAL GRID / 25.62 N</text>
+                    <text x="770" y="30">SECTOR 04</text>
+                  </g>
+                </svg>
+                <div class="map-coordinate-card">
+                  <span class="micro-label">LAST KNOWN POSITION</span>
+                  <strong>25.6193° N, 85.1415° E</strong>
+                  <span><i class="dot"></i> GPS lock · accuracy ±4.2 m</span>
+                </div>
+                <div class="map-scale"><i></i><span>500 M</span></div>
+              </div>
+              <footer class="map-foot">
+                <div><span class="micro-label">ROUTING LINK</span><a href="https://maps.google.com/?q=25.6193,85.1415" target="_blank" rel="noopener" id="mapRouteLink">maps.google.com/?q=25.6193,85.1415</a></div>
+                <button class="text-button" id="copyCoordsButton" type="button"><svg class="icon"><use href="#i-copy"/></svg> Copy coordinates</button>
+              </footer>
+            </section>
+
+            <section class="card agencies-card">
+              <header class="card-head">
+                <div class="card-title">
+                  <span class="eyebrow">ESCALATION NETWORK</span>
+                  <h2>Response agencies</h2>
+                </div>
+                <span class="network-chip"><i></i> 3 NODES</span>
+              </header>
+              <div class="agency-list" id="agencyList">
+                <article class="agency-row" data-agency="guardian">
+                  <div class="agency-mark guardian"><svg class="icon"><use href="#i-shield"/></svg></div>
+                  <div class="agency-copy">
+                    <span class="micro-label">PRIMARY ESCALATION</span>
+                    <strong>Fleet Guardian</strong>
+                    <small>Telegram bot + live dashboard</small>
+                  </div>
+                  <span class="agency-status is-ok" data-agency-status>MONITORING</span>
+                  <button class="mini-action" data-alert-agency="guardian" type="button">Alert</button>
+                </article>
+                <article class="agency-row" data-agency="police">
+                  <div class="agency-mark police"><svg class="icon"><use href="#i-badge"/></svg></div>
+                  <div class="agency-copy">
+                    <span class="micro-label">ROAD SAFETY</span>
+                    <strong>Police Control</strong>
+                    <small>Incident brief + live telemetry</small>
+                  </div>
+                  <span class="agency-status" data-agency-status>STANDBY</span>
+                  <button class="mini-action" data-alert-agency="police" type="button">Alert</button>
+                </article>
+                <article class="agency-row" data-agency="ems">
+                  <div class="agency-mark ems"><svg class="icon"><use href="#i-medical"/></svg></div>
+                  <div class="agency-copy">
+                    <span class="micro-label">MEDICAL RESPONSE</span>
+                    <strong>EMS Triage</strong>
+                    <small>Driver vitals + venue route</small>
+                  </div>
+                  <span class="agency-status" data-agency-status>STANDBY</span>
+                  <button class="mini-action" data-alert-agency="ems" type="button">Alert</button>
+                </article>
+              </div>
+              <footer class="agencies-foot">
+                <span><i class="dot"></i> Telemetry bus encrypted · 24 ms</span>
+                <span>Auto-handoff at <b>LEVEL 4</b></span>
+              </footer>
+            </section>
+
+            <section class="card uplink-card">
+              <header class="card-head">
+                <div class="card-title">
+                  <span class="eyebrow">EMERGENCY UPLINK</span>
+                  <h2>Telegram packet</h2>
+                </div>
+                <span class="uplink-status" id="tgStatus"><i></i> SANDBOX</span>
+              </header>
+              <div class="uplink-preview">
+                <div class="uplink-visual">
+                  <span class="uplink-mark"><svg class="icon"><use href="#i-telegram"/></svg></span>
+                  <span class="uplink-beam"></span>
+                  <span class="uplink-target"><i></i></span>
+                </div>
+                <div class="uplink-copy">
+                  <span class="micro-label">PACKET CONTENTS</span>
+                  <div class="payload-chips">
+                    <span><svg class="icon"><use href="#i-camera"/></svg> Snapshot</span>
+                    <span><svg class="icon"><use href="#i-clock"/></svg> Timestamp</span>
+                    <span><svg class="icon"><use href="#i-car"/></svg> Vehicle ID</span>
+                    <span><svg class="icon"><use href="#i-pin"/></svg> GPS fix</span>
+                    <span><svg class="icon"><use href="#i-map"/></svg> Venue route</span>
+                  </div>
+                  <p>Triggered by continuous eye closure &gt; 5.0 s or impact flag. Delivery is idempotent and operator-visible.</p>
+                </div>
+              </div>
+              <div class="uplink-meta">
+                <div><span>TARGET CHAT</span><b id="tgTarget">CONFIGURED VIA ENV</b></div>
+                <div><span>LAST ATTEMPT</span><b id="tgLastAttempt">—</b></div>
+                <div><span>MODE</span><b id="tgMode">SIMULATION</b></div>
+              </div>
+              <footer class="uplink-actions">
+                <button class="primary-button compact-button" id="telegramButton" type="button" disabled>
+                  <svg class="icon"><use href="#i-send"/></svg><span>Transmit alert</span>
+                </button>
+                <button class="ghost-button small" id="snapshotButton2" type="button">
+                  <svg class="icon"><use href="#i-download"/></svg> Snapshot
+                </button>
+              </footer>
+            </section>
+
+            <section class="card remote-card">
+              <header class="card-head">
+                <div class="card-title">
+                  <span class="eyebrow">REMOTE CONTROL BUS</span>
+                  <h2>Vehicle &amp; cabin override</h2>
+                </div>
+                <span class="danger-label"><svg class="icon"><use href="#i-lock"/></svg> COMMAND AUTHORITY</span>
+              </header>
+              <div class="remote-grid">
+                <div class="power-control">
+                  <div class="power-top">
+                    <span class="power-icon"><svg class="icon"><use href="#i-power"/></svg></span>
+                    <span><small>POWERTRAIN INTERLOCK</small><strong id="engineStateBig">RUNNING</strong></span>
+                    <span class="power-speed"><b id="remoteSpeed">42</b><small>KM/H</small></span>
+                  </div>
+                  <div class="power-actions">
+                    <button class="danger-button" id="haltButton" type="button"><svg class="icon"><use href="#i-power"/></svg> Halt powertrain</button>
+                    <button class="outline-button" id="runButton" type="button" disabled><svg class="icon"><use href="#i-play"/></svg> Release interlock</button>
+                  </div>
+                  <p class="control-note"><svg class="icon"><use href="#i-alert"/></svg> Remote command writes to the software interlock; use only after visual confirmation.</p>
+                </div>
+                <div class="intercom-control">
+                  <div class="intercom-head">
+                    <span class="power-icon"><svg class="icon"><use href="#i-mic"/></svg></span>
+                    <span><small>CABIN VOICE INTERCOM</small><strong>Speech synthesis broadcast</strong></span>
+                    <span class="voice-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+                  </div>
+                  <div class="intercom-input">
+                    <input id="intercomInput" type="text" maxlength="180" placeholder="Message for cabin…" aria-label="Cabin voice intercom message" value="Driver, pull over safely. Assistance is on the way.">
+                    <button class="primary-button compact-button" id="intercomSend" type="button"><svg class="icon"><use href="#i-send"/></svg></button>
+                  </div>
+                  <div class="preset-chips">
+                    <button type="button" data-intercom="Driver, wake up. Cabin alert is active.">Wake alert</button>
+                    <button type="button" data-intercom="Driver, pull over safely. Assistance is on the way.">Pull over</button>
+                    <button type="button" data-intercom="Emergency services have been notified. Stay with the vehicle.">Agency relay</button>
+                  </div>
+                </div>
+              </div>
+              <footer class="remote-foot">
+                <span><i class="dot"></i> Commands logged to immutable event ledger</span>
+                <a href="https://maps.google.com/?q=25.6193,85.1415" target="_blank" rel="noopener" class="text-button">Venue route <svg class="icon"><use href="#i-arrow-up-right"/></svg></a>
+              </footer>
+            </section>
+
+            <section class="card response-ledger-card">
+              <header class="card-head">
+                <div class="card-title">
+                  <span class="eyebrow">AUDIT TRAIL</span>
+                  <h2>Incident blackbox</h2>
+                </div>
+                <button class="ghost-button small" id="reportButton" type="button"><svg class="icon"><use href="#i-download"/></svg> Export JSON</button>
+              </header>
+              <div class="response-ledger" id="responseLedger"></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- =========================================================== ANALYTICS -->
+        <section class="view" data-panel="analytics" id="view-analytics" hidden>
+          <div class="view-intro">
+            <div>
+              <span class="eyebrow">SESSION INTELLIGENCE / AUDIT LAYER</span>
+              <h2>Biometric performance &amp; evidence</h2>
+            </div>
+            <div class="intro-actions">
+              <span class="inline-status"><i></i> SESSION DATA · EDGE NODE 01</span>
+              <button class="outline-button small" id="analyticsReportButton" type="button"><svg class="icon"><use href="#i-download"/></svg> Export session</button>
+            </div>
+          </div>
+
+          <div class="kpi-grid">
+            <article class="card kpi-card">
+              <span class="micro-label">SESSION UPTIME</span>
+              <strong id="kpiUptime">00:00:00</strong>
+              <span class="kpi-foot"><i class="teal-bar"></i> Telemetry nominal</span>
+              <svg class="kpi-spark" viewBox="0 0 220 44" preserveAspectRatio="none" aria-hidden="true"><path d="M0 32 C20 31 25 20 46 24 S75 38 98 28 S130 9 151 18 S192 30 220 13" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            </article>
+            <article class="card kpi-card">
+              <span class="micro-label">BLINK EVENTS</span>
+              <strong id="kpiBlinks">214</strong>
+              <span class="kpi-foot"><i class="teal-bar"></i> 15.5 per minute</span>
+              <svg class="kpi-spark" viewBox="0 0 220 44" preserveAspectRatio="none" aria-hidden="true"><path d="M0 33 C20 33 25 18 46 24 S75 33 98 22 S130 31 151 20 S192 34 220 18" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            </article>
+            <article class="card kpi-card">
+              <span class="micro-label">MICROSLEEP EVENTS</span>
+              <strong id="kpiMicrosleeps">1</strong>
+              <span class="kpi-foot"><i class="amber-bar"></i> 1 acknowledged · 0.7 s peak</span>
+              <svg class="kpi-spark warm" viewBox="0 0 220 44" preserveAspectRatio="none" aria-hidden="true"><path d="M0 38 L42 38 L51 20 L58 38 L138 38 L148 16 L154 38 L220 38" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            </article>
+            <article class="card kpi-card">
+              <span class="micro-label">RISK EXPOSURE</span>
+              <strong id="kpiRiskExposure">21<small>%</small></strong>
+              <span class="kpi-foot"><i class="teal-bar"></i> Nominal band · below 30</span>
+              <svg class="kpi-spark" viewBox="0 0 220 44" preserveAspectRatio="none" aria-hidden="true"><path d="M0 36 C30 35 23 26 50 30 S80 21 105 28 S142 25 165 31 S203 16 220 20" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            </article>
+          </div>
+
+          <div class="analytics-grid">
+            <section class="card analytics-main">
+              <header class="card-head">
+                <div class="card-title">
+                  <span class="eyebrow">TIME SERIES / 90 SECOND WINDOW</span>
+                  <h2>Biometric correlation</h2>
+                </div>
+                <div class="chart-tabs" id="analyticsTabs">
+                  <button class="is-active" data-analytics-series="all" type="button">Combined</button>
+                  <button data-analytics-series="ear" type="button">EAR</button>
+                  <button data-analytics-series="mar" type="button">MAR</button>
+                  <button data-analytics-series="risk" type="button">Risk</button>
+                </div>
+              </header>
+              <div class="analytics-chart-wrap">
+                <canvas id="analyticsChart" aria-label="90 second biometric analytics chart"></canvas>
+              </div>
+              <div class="analytics-legend">
+                <span><i class="teal"></i> Eye aspect ratio <b>0.305</b></span>
+                <span><i class="amber"></i> Mouth aspect ratio <b>0.18</b></span>
+                <span><i class="coral"></i> Fatigue risk <b id="analyticsRiskLegend">19%</b></span>
+                <span><i class="grid"></i> Event markers <b id="analyticsMarkerCount">4</b></span>
+              </div>
+            </section>
+
+            <section class="card feature-card">
+              <header class="card-head">
+                <div class="card-title">
+                  <span class="eyebrow">MODEL FEATURES</span>
+                  <h2>Fatigue drivers</h2>
+                </div>
+                <span class="model-chip">RF-EDGE / v2</span>
+              </header>
+              <div class="feature-list">
+                <div class="feature-item">
+                  <div class="feature-top"><span>Eye aperture</span><b>68</b></div>
+                  <div class="feature-track"><i style="--fill:68%;--tone:var(--teal)"></i></div>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-top"><span>Eye closure duration</span><b>54</b></div>
+                  <div class="feature-track"><i style="--fill:54%;--tone:var(--teal)"></i></div>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-top"><span>Mouth aperture</span><b>31</b></div>
+                  <div class="feature-track"><i style="--fill:31%;--tone:var(--amber)"></i></div>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-top"><span>Head pose drift</span><b>24</b></div>
+                  <div class="feature-track"><i style="--fill:24%;--tone:var(--teal)"></i></div>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-top"><span>Blink interval</span><b>18</b></div>
+                  <div class="feature-track"><i style="--fill:18%;--tone:var(--teal)"></i></div>
+                </div>
+              </div>
+              <footer class="feature-foot">
+                <span><i class="dot"></i> Random Forest inference</span>
+                <span>18.6 ms</span>
+              </footer>
+            </section>
+
+            <section class="card exposure-card">
+              <header class="card-head">
+                <div class="card-title">
+                  <span class="eyebrow">RISK DISTRIBUTION</span>
+                  <h2>Session exposure</h2>
+                </div>
+              </header>
+              <div class="exposure-body">
+                <div class="exposure-ring">
+                  <svg viewBox="0 0 140 140" aria-hidden="true">
+                    <circle cx="70" cy="70" r="52" class="ring-bg"/>
+                    <circle cx="70" cy="70" r="52" class="ring-seg safe" pathLength="100" stroke-dasharray="79 21" stroke-dashoffset="25"/>
+                    <circle cx="70" cy="70" r="52" class="ring-seg warn" pathLength="100" stroke-dasharray="14 86" stroke-dashoffset="-54"/>
+                    <circle cx="70" cy="70" r="52" class="ring-seg danger" pathLength="100" stroke-dasharray="7 93" stroke-dashoffset="-68"/>
+                  </svg>
+                  <div><strong>79<small>%</small></strong><span>SAFE</span></div>
+                </div>
+                <div class="exposure-legend">
+                  <span><i class="teal"></i><b>79%</b> Nominal</span>
+                  <span><i class="amber"></i><b>14%</b> Caution</span>
+                  <span><i class="coral"></i><b>7%</b> Warning+</span>
+                </div>
+              </div>
+              <footer class="exposure-foot"><span>Calibrated against a 90-second rolling baseline.</span></footer>
+            </section>
+
+            <section class="card pipeline-card">
+              <header class="card-head">
+                <div class="card-title">
+                  <span class="eyebrow">EDGE PIPELINE</span>
+                  <h2>Inference chain</h2>
+                </div>
+                <span class="network-chip"><i></i> READY</span>
+              </header>
+              <div class="pipeline">
+                <div class="pipe-step"><span>01</span><div><strong>FaceMesh</strong><small>468 landmarks</small></div><i>6.8 ms</i></div>
+                <div class="pipe-connector"><span></span></div>
+                <div class="pipe-step"><span>02</span><div><strong>Feature fusion</strong><small>EAR · MAR · pose</small></div><i>2.4 ms</i></div>
+                <div class="pipe-connector"><span></span></div>
+                <div class="pipe-step"><span>03</span><div><strong>Fatigue classifier</strong><small>Random Forest</small></div><i>0.9 ms</i></div>
+                <div class="pipe-connector"><span></span></div>
+                <div class="pipe-step"><span>04</span><div><strong>Safety policy</strong><small>Level 0–4 ladder</small></div><i>0.4 ms</i></div>
+              </div>
+              <footer class="pipeline-foot"><span><i class="dot"></i> Fully local · no cloud dependency</span><span>10.5 ms critical path</span></footer>
+            </section>
+          </div>
+        </section>
+
+        <!-- ============================================================= COPILOT -->
+        <section class="view" data-panel="copilot" id="view-copilot" hidden>
+          <div class="view-intro">
+            <div>
+              <span class="eyebrow">GEMINI 2.5 FLASH / CONTEXTUAL DECISION SUPPORT</span>
+              <h2>DRISHTI tactical copilot</h2>
+            </div>
+            <div class="intro-actions">
+              <span class="inline-status" id="copilotSourceStatus"><i></i> TACTICAL FALLBACK READY</span>
+              <button class="outline-button small" id="clearChatButton" type="button"><svg class="icon"><use href="#i-refresh"/></svg> Reset thread</button>
+            </div>
+          </div>
+
+          <div class="copilot-grid">
+            <section class="card chat-card">
+              <header class="chat-head">
+                <div class="copilot-avatar"><svg class="icon"><use href="#i-spark"/></svg><span class="avatar-pulse"></span></div>
+                <div class="copilot-id">
+                  <strong>DRISHTI Copilot</strong>
+                  <span><i class="dot"></i> Live telemetry context injected</span>
+                </div>
+                <span class="copilot-mode" id="copilotModeChip">OFFLINE TACTICAL</span>
+                <button class="icon-button compact" id="copilotInfo" type="button" aria-label="Copilot context information"><svg class="icon"><use href="#i-more"/></svg></button>
+              </header>
+              <div class="chat-log" id="chatLog" aria-live="polite">
+                <div class="chat-row assistant">
+                  <span class="chat-avatar"><svg class="icon"><use href="#i-spark"/></svg></span>
+                  <div class="chat-bubble">
+                    <span class="chat-meta">DRISHTI COPILOT · NOW</span>
+                    <p>Good afternoon. I have the live cabin feed, biometric stream and escalation state in context.</p>
+                    <p>Ask me for a status brief, an escalation rationale, or a hand-off message for the response agencies.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="prompt-suggestions" id="promptSuggestions">
+                <button type="button" data-prompt="Give me a tactical status brief.">Tactical status brief</button>
+                <button type="button" data-prompt="Why is the current safety level active?">Explain escalation</button>
+                <button type="button" data-prompt="Prepare a multi-agency incident hand-off.">Agency hand-off</button>
+                <button type="button" data-prompt="What should I verify before resolving the incident?">Resolution checklist</button>
+              </div>
+              <form class="chat-composer" id="chatForm">
+                <span class="composer-icon"><svg class="icon"><use href="#i-spark"/></svg></span>
+                <textarea id="chatInput" rows="1" placeholder="Ask DRISHTI about the driver, safety protocol or incident…" aria-label="Message DRISHTI Copilot"></textarea>
+                <span class="composer-hint">ENTER TO SEND</span>
+                <button class="send-button" id="chatSend" type="submit" aria-label="Send message"><svg class="icon"><use href="#i-arrow-up"/></svg></button>
+              </form>
+              <footer class="chat-foot">
+                <span><svg class="icon"><use href="#i-lock"/></svg> Decisions remain operator-controlled. Copilot cannot actuate hardware.</span>
+                <span id="copilotLatency">READY</span>
+              </footer>
+            </section>
+
+            <aside class="copilot-aside">
+              <section class="card context-card">
+                <header class="card-head compact-head">
+                  <div class="card-title">
+                    <span class="eyebrow">INJECTED CONTEXT</span>
+                    <h2>Live telemetry</h2>
+                  </div>
+                  <span class="live-label"><i></i> SYNCED</span>
+                </header>
+                <div class="context-list" id="copilotContext">
+                  <div><span>DRIVER STATE</span><b id="ctxDriver">ATTENTIVE</b></div>
+                  <div><span>ATTENTION INDEX</span><b id="ctxAttention">86 / 100</b></div>
+                  <div><span>FATIGUE RISK</span><b id="ctxFatigue">19%</b></div>
+                  <div><span>SAFETY LEVEL</span><b id="ctxSafety">0 · MONITOR</b></div>
+                  <div><span>EYE CLOSURE</span><b id="ctxClosure">0.0 s</b></div>
+                  <div><span>POWERTRAIN</span><b id="ctxEngine">RUNNING</b></div>
+                  <div><span>INCIDENT</span><b id="ctxIncident">NONE</b></div>
+                  <div><span>UPLINK</span><b id="ctxUplink">SANDBOX</b></div>
+                </div>
+                <footer class="context-foot">
+                  <span><i class="dot"></i> 4 Hz live context</span>
+                  <span id="contextUpdated">just now</span>
+                </footer>
+              </section>
+
+              <section class="card guardrail-card">
+                <div class="guardrail-icon"><svg class="icon"><use href="#i-shield"/></svg></div>
+                <span class="eyebrow">OPERATOR GUARDRAIL</span>
+                <h3>Advice, not authority.</h3>
+                <p>The copilot reasons over the live state but has no write access to actuators, powertrain or emergency uplinks. Every critical action stays behind a human confirmation.</p>
+                <div class="guardrail-list">
+                  <span><i></i> Human approval required</span>
+                  <span><i></i> Sanitised telemetry context</span>
+                  <span><i></i> Tactical fallback available offline</span>
+                </div>
+              </section>
+
+              <section class="card stack-card">
+                <span class="eyebrow">MODEL STACK</span>
+                <div class="stack-row"><span>Reasoning</span><b>Gemini 2.5 Flash</b></div>
+                <div class="stack-row"><span>Fallback</span><b>Local tactical rules</b></div>
+                <div class="stack-row"><span>Vision</span><b>MediaPipe FaceLandmarker</b></div>
+                <div class="stack-row"><span>Runtime</span><b>Local edge · 4 Hz</b></div>
+              </section>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ========================================================= SYSTEM DRAWER -->
+  <div class="drawer-scrim" id="drawerScrim" hidden></div>
+  <aside class="system-drawer" id="systemDrawer" aria-hidden="true" aria-label="System and hardware">
+    <header class="drawer-head">
+      <div>
+        <span class="eyebrow">SYSTEM / EDGE NODE</span>
+        <h2>Hardware &amp; uplink</h2>
+      </div>
+      <button class="icon-button" id="closeSystem" type="button" aria-label="Close system drawer"><svg class="icon"><use href="#i-x"/></svg></button>
+    </header>
+    <div class="drawer-body">
+      <section class="drawer-section">
+        <div class="drawer-section-head"><span class="micro-label">ACTUATOR CONTROLLER</span><span class="drawer-status" id="drawerHardwareStatus"><i></i> SIMULATED</span></div>
+        <div class="hardware-card">
+          <span class="hardware-mark"><svg class="icon"><use href="#i-chip"/></svg></span>
+          <div>
+            <strong>Arduino Uno</strong>
+            <small id="drawerPort">SIMULATED · 9600 BAUD</small>
+          </div>
+          <button class="outline-button small" id="hardwareConnectButton" type="button">Connect</button>
+        </div>
+        <div class="pin-matrix">
+          <div><span>D5</span><b>ENA</b><small>PWM torque</small></div>
+          <div><span>D6</span><b>IN1</b><small>Direction</small></div>
+          <div><span>D7</span><b>IN2</b><small>Direction</small></div>
+          <div><span>D9</span><b>ALERT</b><small>Buzzer + LED</small></div>
+        </div>
+        <div class="hardware-note"><i></i> External 12V pack · common ground required</div>
+        <div class="drawer-button-row">
+          <button class="ghost-button small" id="hardwareTestButton" type="button"><svg class="icon"><use href="#i-refresh"/></svg> Ping controller</button>
+          <button class="text-button" id="hardwareDisconnectButton" type="button">Disconnect</button>
+        </div>
+      </section>
+
+      <section class="drawer-section">
+        <div class="drawer-section-head"><span class="micro-label">UPLINK CREDENTIALS</span><span class="drawer-status" id="drawerTelegramStatus"><i></i> SANDBOX</span></div>
+        <div class="credential-row"><span><svg class="icon"><use href="#i-telegram"/></svg> Telegram bot</span><b id="drawerTelegramMode">SIMULATION</b></div>
+        <div class="credential-row"><span><svg class="icon"><use href="#i-spark"/></svg> Gemini copilot</span><b id="drawerGeminiMode">OFFLINE FALLBACK</b></div>
+        <p class="drawer-help">Credentials are read from environment variables at launch. They are never written into browser code or the event ledger.</p>
+        <code class="env-code">TELEGRAM_BOT_TOKEN=••••••<br>TELEGRAM_CHAT_ID=••••••<br>GEMINI_API_KEY=••••••</code>
+      </section>
+
+      <section class="drawer-section">
+        <div class="drawer-section-head"><span class="micro-label">SAFETY POLICY</span><span class="drawer-status ok"><i></i> ACTIVE</span></div>
+        <div class="policy-list">
+          <div><span>EAR threshold</span><b>&lt; 0.230</b></div>
+          <div><span>MAR threshold</span><b>&gt; 0.650</b></div>
+          <div><span>Distraction yaw</span><b>&gt; 25°</b></div>
+          <div><span>Emergency closure</span><b>&gt; 5.0 s</b></div>
+          <div><span>Actuator mode</span><b id="drawerActuatorMode">AUTO GUARD</b></div>
+        </div>
+      </section>
+
+      <section class="drawer-section">
+        <div class="drawer-section-head"><span class="micro-label">VENUE NODE</span><span class="drawer-status ok"><i></i> ONLINE</span></div>
+        <div class="venue-detail">
+          <strong>State Science &amp; Tech Pavilion</strong>
+          <span>Patna, Bihar · 25.6193° N, 85.1415° E</span>
+          <a href="https://maps.google.com/?q=25.6193,85.1415" target="_blank" rel="noopener">Open venue route <svg class="icon"><use href="#i-arrow-up-right"/></svg></a>
+        </div>
+        <div class="server-url"><span>HOTSPOT CONSOLE</span><code id="serverUrl">http://&lt;LAPTOP_IP&gt;:5000</code></div>
+      </section>
+    </div>
+    <footer class="drawer-foot">
+      <span><i class="dot"></i> DMS/1 · v{{ version }}</span>
+      <span>Software safety layer · operator supervised</span>
+    </footer>
+  </aside>
+
+  <!-- ================================================================ TOASTS -->
+  <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- ============================================================ CONFIRM UI -->
+  <div class="modal-scrim" id="confirmScrim" hidden>
+    <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <span class="confirm-icon" id="confirmIcon"><svg class="icon"><use href="#i-alert"/></svg></span>
+      <h3 id="confirmTitle">Confirm command</h3>
+      <p id="confirmBody">This command affects the physical actuator bench.</p>
+      <div class="confirm-actions">
+        <button class="ghost-button" id="confirmCancel" type="button">Cancel</button>
+        <button class="danger-button" id="confirmAccept" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SVG SPRITE -->
+  <svg class="svg-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m8.7 12 2.2 2.2 4.4-4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-shield-alert" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-3Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v5M12 16.4v.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 19V5M4 19h16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="m7 15 4-5 3 2.4 4.5-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18.5" cy="6.5" r="1.4" fill="currentColor"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2.8c.5 5.4 3.8 8.7 9.2 9.2-5.4.5-8.7 3.8-9.2 9.2-.5-5.4-3.8-8.7-9.2-9.2 5.4-.5 8.7-3.8 9.2-9.2Z" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M19 2v3M20.5 3.5h-3M4.5 18.5v3M6 20H3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h6M14 7h6M4 17h10M18 17h2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="16" cy="17" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6M10 19h4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-car" viewBox="0 0 24 24"><path d="m5 11 1.7-4.2A2 2 0 0 1 8.6 5.5h6.8a2 2 0 0 1 1.9 1.3L19 11M4 11h16a1 1 0 0 1 1 1v4.5h-2.5M3 16.5V12a1 1 0 0 1 1-1M5.5 16.5h13M6 16.5v2H3.5v-2M20.5 16.5v2H18v-2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7.5" cy="13.7" r="1.3" fill="currentColor"/><circle cx="16.5" cy="13.7" r="1.3" fill="currentColor"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M19 10c0 5.2-7 11-7 11s-7-5.8-7-11a7 7 0 1 1 14 0Z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="10" r="2.4" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M7 10l5-5 5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-snapshot" viewBox="0 0 24 24"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1L9 4h6l1.5 2h1A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-8Z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="12.2" r="3.2" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="m15.5 10 5-2.7v9.4l-5-2.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M9 4H4v5M15 4h5v5M20 15v5h-5M4 15v5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-vision" viewBox="0 0 24 24"><path d="M3 12c3.2-4.5 5.8-6.7 9-6.7s5.8 2.2 9 6.7c-3.2 4.5-5.8 6.7-9 6.7S6.2 16.5 3 12Z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="12" r="3.1" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2" stroke="currentColor" stroke-width="1.2"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M3.5 12c2.9-4 5.7-6 8.5-6s5.6 2 8.5 6c-2.9 4-5.7 6-8.5 6s-5.6-2-8.5-6Z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="2.7" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r=".9" fill="currentColor"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M5 5 19 19M10.2 6.3A9 9 0 0 1 12 6c2.8 0 5.6 2 8.5 6a17 17 0 0 1-2.2 2.7M6.3 7.6A17 17 0 0 0 3.5 12c2.9 4 5.7 6 8.5 6 1.1 0 2.2-.3 3.3-.9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9.8 10.2a3 3 0 0 0 4 4" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 21c.7-4.5 3.4-7 8-7s7.3 2.5 8 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5L8 5.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.4 4.4L19 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check-double" viewBox="0 0 24 24"><path d="m3 12.5 3.6 3.6L14 8M11 16.1l.7.7L20 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 21 20H3L12 4Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 9.5v4.2M12 16.8v.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M12 7v5l3.2 2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="m3.5 6.5 5.5-2 6 2 5.5-2v13l-5.5 2-6-2-5.5 2v-13Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 4.5v13M15 6.5v13" fill="none" stroke="currentColor" stroke-width="1.2"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M4 19.5h16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="m3.5 11 17-7-5.4 16-3.4-6.3L3.5 11Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="m11.7 13.7 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-telegram" viewBox="0 0 24 24"><path d="m21 4-3.3 15.2c-.2 1-1 1.2-1.8.7l-5-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.2 8.5-7.7c.4-.4-.1-.5-.6-.2L6.3 11 1.8 9.6c-1-.3-1-1 .2-1.5L19.8 1c.8-.3 1.4.1 1.2 3Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M8.5 21h7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="15" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-power" viewBox="0 0 24 24"><path d="M12 3v8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M7 6.2a8 8 0 1 0 10 0" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-wheel" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M12 3.5v6M4.6 16.2l5.2-3M19.4 16.2l-5.2-3" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="19" cy="12" r="1.4" fill="currentColor"/></symbol>
+    <symbol id="i-badge" viewBox="0 0 24 24"><path d="m12 3 2.4 1.7 2.9-.2.9 2.8 2.4 1.7-1 2.8 1 2.8-2.4 1.7-.9 2.8-2.9-.2L12 21l-2.4-1.7-2.9.2-.9-2.8L3.4 15l1-2.8-1-2.8 2.4-1.7.9-2.8 2.9.2L12 3Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M12 8.5v4M12 15.2v.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-medical" viewBox="0 0 24 24"><path d="M9 4h6v5h5v6h-5v5H9v-5H4V9h5V4Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.1 8.2A8 8 0 0 1 20 12M4 12a8 8 0 0 0 13.9 3.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-chip" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9 9h6v6H9zM9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3" fill="none" stroke="currentColor" stroke-width="1.3"/></symbol>
+    <symbol id="i-dot" viewBox="0 0 8 8"><circle cx="4" cy="4" r="2.5" fill="currentColor"/></symbol>
+  </svg>
+
+  <script src="/static/js/demo-feed.js"></script>
+  <script src="/static/js/charts.js"></script>
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,1088 @@
+/* ==========================================================================
+   Responsive behaviour
+   ========================================================================== */
+
+@media (max-width: 1680px) {
+  :root {
+    --side-width: 226px;
+  }
+  .main-canvas {
+    padding: 15px 19px 19px;
+  }
+  .topbar {
+    padding: 0 20px 0 23px;
+  }
+  .attention-orbit {
+    width: 155px;
+    height: 155px;
+    flex-basis: 155px;
+  }
+  .orbit-center strong {
+    font-size: 43px;
+  }
+  .driver-hero {
+    gap: 11px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .state-summary h3 {
+    font-size: 16.5px;
+  }
+  .state-summary p {
+    font-size: 10px;
+  }
+  .metric-triad,
+  .escalation-panel {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+  .driver-actions {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .trend-values > div {
+    min-width: 94px;
+    padding-right: 11px;
+    margin-right: 11px;
+  }
+  .trend-values small {
+    display: none;
+  }
+  .cockpit-grid {
+    grid-template-rows: clamp(540px, calc(100vh - 454px), 680px) 232px;
+  }
+  .incident-metrics > div {
+    min-width: 90px;
+    padding: 7px 13px;
+  }
+}
+
+@media (max-width: 1480px) {
+  .link-pill {
+    display: none;
+  }
+  .page-subtitle,
+  .title-separator {
+    display: none;
+  }
+  .clock-block {
+    padding-right: 12px;
+  }
+  .topbar-tools {
+    gap: 12px;
+  }
+  .operator-pill {
+    min-width: 128px;
+  }
+  .eyebrow {
+    letter-spacing: 0.1em;
+  }
+  .strip-stat {
+    min-width: 93px;
+    padding-right: 15px;
+    margin-right: 15px;
+  }
+  .strip-location {
+    min-width: 130px;
+  }
+  .unit-lockup {
+    min-width: 195px;
+  }
+  .actuator-row {
+    gap: 6px;
+  }
+  .waveform {
+    display: none;
+  }
+  .chart-legend {
+    gap: 8px;
+  }
+  .head-actions {
+    gap: 5px;
+  }
+}
+
+@media (max-width: 1320px) {
+  .sidebar-mission {
+    display: none;
+  }
+  .brand {
+    margin-bottom: 28px;
+  }
+  .nav-text small {
+    display: none;
+  }
+  .nav-item {
+    min-height: 44px;
+  }
+  .sidebar-unit {
+    margin-top: 24px;
+  }
+  .topbar-kicker {
+    display: none;
+  }
+  .topbar {
+    min-height: 78px;
+  }
+  .page-shell {
+    height: 100vh;
+  }
+  .clock-date {
+    display: none;
+  }
+  .clock-block {
+    border-right: 0;
+    padding-right: 0;
+  }
+  .incident-metrics {
+    display: none;
+  }
+  .response-grid .map-card,
+  .response-grid .agencies-card,
+  .response-grid .uplink-card,
+  .response-grid .remote-card {
+    grid-column: span 6;
+  }
+  .response-grid .protected,
+  .response-grid .response-ledger-card {
+    grid-column: span 12;
+  }
+  .copilot-grid {
+    grid-template-columns: minmax(0, 1.45fr) minmax(270px, 0.7fr);
+  }
+  .chat-card {
+    height: calc(100vh - 183px);
+  }
+}
+
+/* Collapsed rail */
+@media (max-width: 1230px) {
+  :root {
+    --side-width: 78px;
+  }
+  .sidebar {
+    align-items: center;
+    padding: 20px 9px 12px;
+  }
+  .brand {
+    padding: 0;
+    margin-bottom: 30px;
+    justify-content: center;
+  }
+  .brand-mark {
+    width: 39px;
+    height: 39px;
+  }
+  .brand-copy,
+  .nav-label,
+  .nav-text,
+  .nav-index,
+  .sidebar-unit,
+  .system-link > span:nth-child(2),
+  .system-link .chevron,
+  .sidebar-foot span,
+  .sidebar-spacer {
+    display: none;
+  }
+  .sidebar-mission {
+    display: none;
+  }
+  .nav-section {
+    width: 100%;
+  }
+  .primary-nav {
+    align-items: center;
+    gap: 7px;
+  }
+  .nav-item {
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    min-height: 0;
+    padding: 0;
+    border-radius: 10px;
+  }
+  .nav-icon {
+    width: 30px;
+    height: 30px;
+    border-color: transparent;
+  }
+  .nav-item.is-active {
+    box-shadow: none;
+    border-color: rgba(110, 232, 210, 0.18);
+    background: rgba(110, 232, 210, 0.08);
+  }
+  .nav-item.is-active::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    width: 2px;
+    height: 16px;
+    border-radius: 2px;
+    background: var(--teal);
+    transform: translateY(-50%);
+  }
+  .nav-badge {
+    position: absolute;
+    top: 0;
+    right: 1px;
+    min-width: 14px;
+    height: 14px;
+    font-size: 6px;
+  }
+  .system-link {
+    justify-content: center;
+    width: 44px;
+    padding: 0;
+    margin-bottom: 8px;
+  }
+  .system-link-icon {
+    width: 30px;
+    height: 30px;
+    border-color: transparent;
+  }
+  .sidebar-foot {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 11px 0 0;
+  }
+  .sidebar-foot .lamp {
+    margin: 0;
+  }
+  .system-drawer {
+    width: 410px;
+  }
+  .kpi-card > strong {
+    font-size: 25px;
+  }
+  .trend-card .card-head {
+    gap: 6px;
+  }
+  .chart-window {
+    display: none;
+  }
+}
+
+/* Stack cockpit before the composition gets too tight */
+@media (max-width: 1180px) {
+  .cockpit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    grid-auto-rows: auto;
+  }
+  .vision-card {
+    grid-column: 1 / -1;
+    height: 540px;
+  }
+  .driver-card {
+    grid-column: 1 / -1;
+    min-height: 560px;
+  }
+  .trend-card {
+    grid-column: 1 / -1;
+    height: 245px;
+  }
+  .actuator-card {
+    grid-column: span 1;
+    min-height: 239px;
+  }
+  .events-card {
+    grid-column: span 1;
+    min-height: 239px;
+  }
+  .attention-orbit {
+    width: 172px;
+    height: 172px;
+    flex-basis: 172px;
+  }
+  .orbit-center strong {
+    font-size: 47px;
+  }
+  .state-summary p {
+    max-width: 440px;
+  }
+  .driver-actions {
+    margin-top: 8px;
+  }
+  .response-grid .map-card,
+  .response-grid .agencies-card,
+  .response-grid .uplink-card,
+  .response-grid .remote-card,
+  .response-grid .response-ledger-card {
+    grid-column: 1 / -1;
+  }
+  .analytics-main {
+    grid-column: 1 / -1;
+  }
+  .feature-card {
+    grid-column: span 6;
+  }
+  .exposure-card {
+    grid-column: span 6;
+  }
+  .pipeline-card {
+    grid-column: 1 / -1;
+  }
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .copilot-grid {
+    grid-template-columns: 1fr;
+  }
+  .chat-card {
+    height: 660px;
+  }
+  .copilot-aside {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+  .copilot-aside .context-card {
+    grid-row: span 2;
+  }
+  .copilot-aside .guardrail-card,
+  .copilot-aside .stack-card {
+    height: 100%;
+  }
+}
+
+@media (max-width: 980px) {
+  .main-canvas {
+    padding: 13px 14px 18px;
+  }
+  .topbar {
+    min-height: 72px;
+    padding: 0 14px 0 18px;
+  }
+  .title-line h1 {
+    font-size: 21px;
+  }
+  .operator-pill {
+    display: none;
+  }
+  .telemetry-strip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    height: 70px;
+    flex-basis: 70px;
+    padding-right: 8px;
+  }
+  .unit-lockup {
+    min-width: 190px;
+  }
+  .strip-stat {
+    flex: 0 0 auto;
+  }
+  .strip-location {
+    flex: 0 0 220px;
+  }
+  .strip-network {
+    display: none;
+  }
+  .map-jump {
+    margin-left: auto;
+  }
+  .vision-card,
+  .driver-card {
+    grid-column: 1 / -1;
+  }
+  .actuator-card,
+  .events-card {
+    grid-column: 1 / -1;
+  }
+  .map-card .map-graphic {
+    height: 235px;
+  }
+  .remote-grid {
+    grid-template-columns: 1fr;
+  }
+  .power-control {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .copilot-aside {
+    grid-template-columns: 1fr;
+  }
+  .copilot-aside .context-card {
+    grid-row: auto;
+  }
+  .chat-card {
+    height: 620px;
+  }
+  .response-ledger {
+    grid-template-columns: 1fr;
+  }
+  .view-intro {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 11px;
+  }
+  .view-intro h2 {
+    font-size: 19px;
+  }
+  .intro-actions {
+    width: 100%;
+  }
+  .analytics-main,
+  .feature-card,
+  .exposure-card,
+  .pipeline-card {
+    grid-column: 1 / -1;
+  }
+  .incident-banner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .incident-copy {
+    flex-basis: calc(100% - 72px);
+  }
+}
+
+@media (max-width: 760px) {
+  body {
+    overflow: hidden;
+  }
+  .app-shell {
+    grid-template-columns: 1fr;
+    height: calc(100vh - 57px);
+  }
+  .page-shell {
+    height: calc(100vh - 57px);
+  }
+  .sidebar {
+    position: fixed;
+    z-index: 70;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 57px;
+    flex-direction: row;
+    padding: 6px 11px;
+    border-top: 1px solid var(--line-strong);
+    border-right: 0;
+    background: rgba(7, 13, 16, 0.97);
+    backdrop-filter: blur(18px);
+  }
+  .sidebar::after,
+  .brand,
+  .sidebar-mission,
+  .nav-label,
+  .sidebar-unit,
+  .sidebar-spacer,
+  .system-link,
+  .sidebar-foot {
+    display: none;
+  }
+  .nav-section {
+    width: 100%;
+  }
+  .primary-nav {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 2px;
+  }
+  .nav-item {
+    flex: 1;
+    width: auto;
+    height: 44px;
+    flex-direction: column;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 8px;
+  }
+  .nav-icon {
+    width: 23px;
+    height: 23px;
+    border: 0;
+    background: transparent;
+  }
+  .nav-item.is-active::before {
+    left: 50%;
+    top: auto;
+    bottom: -5px;
+    width: 13px;
+    height: 2px;
+    transform: translateX(-50%);
+  }
+  .nav-text {
+    display: block;
+    font-family: var(--mono);
+    font-size: 5.5px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    color: var(--faint);
+  }
+  .nav-item.is-active .nav-text {
+    color: var(--teal-deep);
+  }
+  .nav-badge {
+    top: 0;
+    right: 15%;
+  }
+  .topbar {
+    min-height: 64px;
+    padding: 0 12px 0 15px;
+  }
+  .topbar-tools {
+    gap: 8px;
+  }
+  .topbar-kicker,
+  .clock-date,
+  .page-subtitle,
+  .link-pill {
+    display: none;
+  }
+  .title-line h1 {
+    font-size: 18px;
+  }
+  .clock-time {
+    font-size: 12px;
+  }
+  .notification-button {
+    width: 32px;
+    height: 32px;
+  }
+  .main-canvas {
+    padding: 10px 10px 18px;
+  }
+  .view-intro h2 {
+    font-size: 17px;
+  }
+  .intro-actions {
+    gap: 6px;
+  }
+  .inline-status {
+    display: none;
+  }
+  .intro-actions .outline-button {
+    flex: 1;
+  }
+  .telemetry-strip {
+    margin-bottom: 10px;
+    padding: 0 10px;
+    border-radius: 13px;
+  }
+  .unit-lockup {
+    min-width: 170px;
+    padding-right: 10px;
+  }
+  .unit-symbol {
+    width: 32px;
+    height: 32px;
+  }
+  .unit-title-row b {
+    font-size: 10px;
+  }
+  .strip-rule {
+    margin-right: 10px;
+  }
+  .strip-stat {
+    min-width: 85px;
+    padding-right: 12px;
+    margin-right: 12px;
+  }
+  .strip-location {
+    flex: 0 0 195px;
+  }
+  .strip-value strong {
+    font-size: 18px;
+  }
+  .cockpit-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .vision-card {
+    height: 430px;
+    flex: none;
+  }
+  .driver-card {
+    min-height: 0;
+    flex: none;
+    padding-bottom: 13px;
+  }
+  .vision-actions .ghost-button {
+    display: none;
+  }
+  .driver-hero {
+    align-items: flex-start;
+    gap: 0;
+    padding-top: 2px;
+  }
+  .attention-orbit {
+    width: 135px;
+    height: 135px;
+    flex-basis: 135px;
+    margin-left: -8px;
+  }
+  .orbit-center strong {
+    font-size: 37px;
+  }
+  .orbit-delta {
+    margin-top: 5px;
+  }
+  .state-summary h3 {
+    font-size: 15px;
+  }
+  .state-summary p {
+    font-size: 9px;
+    line-height: 1.4;
+  }
+  .face-mini {
+    display: none;
+  }
+  .risk-row {
+    margin-top: 8px;
+  }
+  .risk-scale {
+    font-size: 4.6px;
+  }
+  .metric-triad {
+    margin-top: 6px;
+  }
+  .metric-cell {
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+  .metric-cell strong {
+    font-size: 14px;
+  }
+  .escalation-panel {
+    margin-top: 8px;
+  }
+  .esc-step span {
+    font-size: 5.1px;
+  }
+  .esc-step small {
+    display: none;
+  }
+  .escalation-foot > span:last-child {
+    display: none;
+  }
+  .driver-actions {
+    margin-top: 4px;
+  }
+  .trend-card {
+    height: 240px;
+    flex: none;
+  }
+  .actuator-card {
+    min-height: 245px;
+    flex: none;
+  }
+  .events-card {
+    min-height: 220px;
+    flex: none;
+  }
+  .trend-values > div {
+    flex: 1;
+    min-width: 0;
+  }
+  .trend-values b {
+    font-size: 10px;
+  }
+  .event-list {
+    max-height: 150px;
+  }
+  .view-intro {
+    margin-top: 2px;
+  }
+  .response-grid,
+  .analytics-grid {
+    gap: 10px;
+  }
+  .incident-banner {
+    gap: 10px;
+    padding: 13px;
+  }
+  .incident-icon {
+    width: 39px;
+    height: 39px;
+  }
+  .incident-icon .icon {
+    width: 18px;
+    height: 18px;
+  }
+  .incident-copy h3 {
+    font-size: 16px;
+  }
+  .incident-copy p {
+    font-size: 9.5px;
+  }
+  .kpi-grid {
+    gap: 9px;
+    grid-template-columns: 1fr 1fr;
+  }
+  .kpi-card {
+    min-height: 102px;
+    padding: 12px;
+  }
+  .kpi-card > strong {
+    font-size: 22px;
+    margin: 8px 0 6px;
+  }
+  .kpi-foot {
+    font-size: 5.2px;
+  }
+  .kpi-spark {
+    display: none;
+  }
+  .chart-tabs {
+    flex-wrap: wrap;
+  }
+  .analytics-chart-wrap {
+    height: 175px;
+    margin: 0 12px;
+  }
+  .analytics-legend {
+    gap: 9px;
+    font-size: 5.3px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .feature-list {
+    padding-left: 13px;
+    padding-right: 13px;
+  }
+  .pipeline {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .pipe-connector {
+    display: none;
+  }
+  .pipe-step {
+    flex-direction: row;
+    align-items: center;
+    gap: 9px;
+  }
+  .pipe-step > div {
+    flex: 1;
+  }
+  .pipe-step > i {
+    margin-left: auto;
+  }
+  .copilot-aside {
+    display: flex;
+  }
+  .chat-card {
+    height: 66vh;
+    min-height: 480px;
+  }
+  .chat-log {
+    padding: 15px;
+  }
+  .chat-row {
+    max-width: 96%;
+  }
+  .composer-hint {
+    display: none;
+  }
+  .prompt-suggestions {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .chat-composer {
+    margin: 0 12px;
+  }
+  .chat-foot {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .chat-foot span:first-child {
+    font-size: 0;
+  }
+  .chat-foot span:first-child .icon {
+    width: 10px;
+    height: 10px;
+  }
+  .response-ledger {
+    max-height: 230px;
+  }
+  .map-coordinate-card {
+    left: 9px;
+    bottom: 9px;
+    min-width: 200px;
+  }
+  .map-scale {
+    display: none;
+  }
+  .agency-row {
+    gap: 7px;
+  }
+  .agency-copy small {
+    font-size: 7px;
+  }
+  .agency-row .mini-action {
+    display: none;
+  }
+  .system-drawer {
+    width: 100%;
+    max-width: 100vw;
+  }
+  .toast-stack {
+    right: 10px;
+    bottom: 68px;
+    left: 10px;
+    align-items: stretch;
+  }
+  .toast {
+    max-width: none;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .clock-block {
+    display: none;
+  }
+  .view-intro h2 {
+    font-size: 16px;
+  }
+  .intro-actions .outline-button.small {
+    font-size: 7.5px;
+    min-height: 29px;
+  }
+  .unit-lockup {
+    min-width: 155px;
+  }
+  .strip-stat:not(.strip-location) {
+    display: none;
+  }
+  .driver-card .card-head {
+    padding-bottom: 4px;
+  }
+  .auto-chip {
+    display: none;
+  }
+  .attention-orbit {
+    width: 120px;
+    height: 120px;
+    flex-basis: 120px;
+    margin-left: -9px;
+  }
+  .orbit-center strong {
+    font-size: 33px;
+  }
+  .orbit-kicker {
+    font-size: 5.5px;
+  }
+  .orbit-delta {
+    padding: 1px 4px;
+    font-size: 4.8px;
+  }
+  .state-summary h3 {
+    font-size: 13.5px;
+  }
+  .state-summary p {
+    font-size: 8.2px;
+  }
+  .state-tag {
+    font-size: 5.4px;
+    height: 17px;
+  }
+  .risk-label span {
+    font-size: 4.7px;
+  }
+  .risk-label b {
+    font-size: 6.5px;
+  }
+  .metric-name small {
+    display: none;
+  }
+  .metric-cell strong {
+    font-size: 12.5px;
+  }
+  .metric-note {
+    font-size: 4.9px;
+  }
+  .escalation-heading {
+    font-size: 4.8px;
+  }
+  .escalation-heading b {
+    font-size: 5.2px;
+  }
+  .esc-step span {
+    font-size: 4.4px;
+  }
+  .esc-step i {
+    width: 17px;
+    height: 17px;
+    font-size: 5px;
+  }
+  .driver-actions {
+    gap: 5px;
+  }
+  .demo-button {
+    min-height: 40px;
+  }
+  .demo-button b {
+    font-size: 8px;
+  }
+  .demo-button small {
+    font-size: 4.8px;
+  }
+  .outline-button.square {
+    width: 38px;
+    flex-basis: 38px;
+  }
+  .vision-card {
+    height: 380px;
+  }
+  .vision-command {
+    display: none;
+  }
+  .vision-side-label {
+    display: none;
+  }
+  .face-lock-card {
+    right: 10px;
+    bottom: 48px;
+  }
+  .feed-stats > span:nth-child(3) {
+    display: none;
+  }
+  .vision-footer {
+    padding-left: 11px;
+    padding-right: 11px;
+  }
+  .vision-model strong {
+    font-size: 5.5px;
+  }
+  .trend-values small {
+    display: none;
+  }
+  .trend-values span {
+    font-size: 5px;
+  }
+  .trend-values b {
+    font-size: 9px;
+  }
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+  .kpi-card {
+    min-height: 88px;
+  }
+  .kpi-spark {
+    display: block;
+  }
+  .agency-mark {
+    width: 29px;
+    height: 29px;
+  }
+  .agency-status {
+    font-size: 5px;
+    padding: 2px 4px;
+  }
+  .agency-copy strong {
+    font-size: 9.5px;
+  }
+  .uplink-preview {
+    gap: 8px;
+    padding: 8px;
+  }
+  .uplink-visual {
+    display: none;
+  }
+  .uplink-meta {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .uplink-meta > div {
+    flex: 1 0 38%;
+    border-right: 0;
+    margin-right: 0;
+  }
+  .map-graphic {
+    height: 210px;
+  }
+  .map-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .incident-banner {
+    flex-wrap: nowrap;
+  }
+  .incident-copy h3 {
+    font-size: 14px;
+  }
+  .incident-copy p {
+    font-size: 8.5px;
+  }
+  .chat-head {
+    flex-wrap: wrap;
+  }
+  .copilot-mode {
+    order: 3;
+    margin-left: 46px;
+  }
+  .chat-foot {
+    font-size: 4.8px;
+  }
+  .power-speed {
+    display: none;
+  }
+  .power-actions {
+    flex-direction: column;
+  }
+  .intercom-head strong {
+    font-size: 9px;
+  }
+  .remote-foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-height: 850px) and (min-width: 1181px) {
+  .topbar {
+    min-height: 74px;
+  }
+  .main-canvas {
+    padding-top: 11px;
+  }
+  .telemetry-strip {
+    flex-basis: 66px;
+    height: 66px;
+    margin-bottom: 10px;
+  }
+  .cockpit-grid {
+    grid-template-rows: 545px 228px;
+    gap: 10px;
+  }
+  .vision-card .card-head,
+  .driver-card .card-head {
+    padding-top: 14px;
+    padding-bottom: 7px;
+  }
+  .driver-hero {
+    padding-bottom: 3px;
+  }
+  .attention-orbit {
+    width: 149px;
+    height: 149px;
+    flex-basis: 149px;
+  }
+  .orbit-center strong {
+    font-size: 41px;
+  }
+  .escalation-panel {
+    margin-top: 7px;
+    padding-top: 7px;
+    padding-bottom: 5px;
+  }
+  .driver-actions {
+    padding-top: 8px;
+  }
+  .chart-head {
+    padding-top: 11px;
+  }
+}
