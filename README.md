@@ -68,12 +68,43 @@ Without these, Telegram runs in sandbox (nothing leaves the laptop).
 - `.env.example` — environment variable template.
 - `.gitignore` — standard Python/OS ignores.
 
-## Exhibition Notes
+## Dependencies & Installation
 
-- Hotspot access: `http://<laptop-ip>:5000`
-- Venue: State Science & Tech Pavilion, Patna (25.6193°, 85.1415°)
-- Gemini and Telegram are optional; the local tactical fallback keeps the exhibition functional offline.
-- No build step and no external CDN assets; all fonts live in `static/fonts/`.
+### Python environment
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+The `requirements.txt` file lists all pinned dependencies (Flask, OpenCV, MediaPipe, numpy, pyserial, Pillow, etc.). Installing from this file ensures the exact library versions used in development.
+
+### System-level
+
+- **Google Chrome** or Chromium browser (for the dashboard UI; tested with Chrome 146+)
+- **Chromedriver** (version matching the installed Chrome; `opencv-python` and `mediapipe` pull their own native dependencies, but on Linux you may need `libgl1-mesa-glx` and `libglib2.0-0` for hardware acceleration)
+- **Webcam** — `cv2.VideoCapture(0)` must succeed; the FaceLandmarker model `face_landmarker.task` must be present at the project root
+
+### Verified working
+
+```bash
+source venv/bin/activate
+python app.py
+# then open http://127.0.0.1:5000
+```
+
+### Optional: live hardware
+
+- **Arduino Uno** connected at 9600 baud on `/dev/ttyUSB0` (or COMxx) for real L298N motor and buzzer/LED control
+- **Telegram bot** — set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in `.env` for live emergency uplink
+- **Gemini API** — set `GEMINI_API_KEY` in `.env` for Gemini 2.5 Flash copilot (offline tactical fallback works without it)
+
+### Notes
+
+- No npm / Node build step is required; the dashboard is served entirely by Flask with local HTML/CSS/JS and local TTF fonts.
+- The `face_landmarker.task` file (MediaPipe model) is included in the repo at `face_landmarker.task`.
+- The `.env` file is gitignored; copy `.env.example` and fill only if you need live Telegram or Gemini.
 
 ---
 
