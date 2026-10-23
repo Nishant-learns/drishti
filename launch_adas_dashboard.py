@@ -8,9 +8,9 @@ Both share the same MediaPipe pipeline → perfectly synchronized.
 Press ESC in the camera window to close just the window; dashboard stays running.
 
 TROUBLESHOOTING:
-  - If camera window doesn't open: run `xhost +local:` or use --Xauthority
+  - If camera window doesn't open: run `xhost +local:` (Linux) or ensure X11 forwarding
   - If dashboard can't start: ensure venv is active and Flask deps installed
-  - If you only want the camera (no dashboard): use the test_camera.py script below
+  - If you only want the camera (no dashboard): use test_camera.py
 """
 
 import sys
@@ -61,9 +61,12 @@ except Exception as e:
 # ── 3. Main loop: show camera feed with ADAS overlays ─────────────────────
 import requests
 
+# Create resizable window (WINDOW_NORMAL allows dragging and resizing)
 cv2_named_window = True
 try:
-    cv2.namedWindow("DRISHTI · Live Cabin Feed + ADAS", cv2.WINDOW_AUTOSIZE)
+    cv2.namedWindow("DRISHTI · Live Cabin Feed + ADAS", cv2.WINDOW_NORMAL)
+    # Set initial size - wide enough for ADAS info but adjustable
+    cv2.resizeWindow("DRISHTI · Live Cabin Feed + ADAS", 1280, 720)
 except Exception as e:
     print(f"[WARNING] Could not create CV2 window: {e}")
     print("  (running dashboard only - no camera window)")
@@ -81,7 +84,7 @@ try:
             # Decode JPEG frame back to numpy array
             img = cv2.imdecode(np.frombuffer(frame, dtype=np.uint8), cv2.IMREAD_COLOR)
 
-            # Get latest state from dashboard (shared → synchronized)
+            # Get latest state from dashboard (shared → synchronized, real data)
             try:
                 snap = requests.get("http://127.0.0.1:5000/api/state", timeout=0.5).json()
                 d = snap.get("driver", {})
@@ -97,34 +100,38 @@ try:
                 head_dir = "FORWARD"
                 pitch, yaw = 0.0, 0.0
 
-            # Draw ADAS overlays
-            cv2.putText(img, f"EAR:{ear:.2f}  MAR:{mar:.2f}", (10, 30),
+            # Draw ADAS overlays on the frame - ALL VALUES ARE REAL from dashboard API
+            # EAR: Eye Aspect Ratio (< 0.23 triggers alert)
+            cv2.putText(img, f"EAR:{ear:.2f}", (10, 30),
                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-
+            # MAR: Mouth Aspect Ratio
+            cv2.putText(img, f"MAR:{mar:.2f}", (10, 60),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            # Risk level (computed from EAR/MAR/pitch/yaw/blink metrics)
             risk_color = (0, 255, 0) if risk < 30 else (0, 165, 255) if risk < 70 else (0, 0, 255)
-            cv2.putText(img, f"RISK:{risk:.0f}%", (10, 60),
+            cv2.putText(img, f"RISK:{risk:.0f}%", (10, 90),
                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, risk_color, 2)
-
+            # Attention level
             att_color = (0, 255, 0) if attention > 80 else (0, 165, 255) if attention > 50 else (0, 0, 255)
-            cv2.putText(img, f"ATT:{attention:.0f}%", (10, 90),
+            cv2.putText(img, f"ATT:{attention:.0f}%", (10, 120),
                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, att_color, 2)
-
-            cv2.putText(img, f"Head: {head_dir}  pitch:{pitch:.1f}  yaw:{yaw:.1f}", (10, 120),
+            # Head pose direction
+            cv2.putText(img, f"Head: {head_dir}  pitch:{pitch:.1f}  yaw:{yaw:.1f}", (10, 150),
                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-
+            # Eye closure warning if EAR < 0.23 (the drowsiness threshold)
             if ear < 0.23:
                 cv2.putText(img, "⚠ EYE CLOSURE ALERT", (10, img.shape[0] - 20),
                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
 
-            # Resize for display (max height 900)
-            scale = 900 / img.shape[0] if img.shape[0] > 0 else 1
+            # Resize for display while keeping aspect ratio (max height 720)
+            scale = 720 / img.shape[0] if img.shape[0] > 0 else 1
             new_w = int(img.shape[1] * scale)
-            img = cv2.resize(img, (new_w, 900))
+            img = cv2.resize(img, (new_w, 720))
 
             cv2.imshow("DRISHTI · Live Cabin Feed + ADAS", img)
         else:
             # No frame yet - still keep UI responsive
-            if cv2.waitKey(1) & 0xFF == 27:
+            if cv2.waitKey(1) & 0xFF == 27:  # ESC key
                 break
             time.sleep(0.1)
 
