@@ -17,16 +17,33 @@ import os
 import cv2
 import numpy as np
 
-# Ensure project directory
-os.chdir("/home/nishant/drowsiness_test")
-sys.path.insert(0, "/home/nishant/drowsiness_test")
+from pathlib import Path
+
+# Ensure project directory is resolved dynamically
+PROJECT_ROOT = Path(__file__).resolve().parent
+os.chdir(PROJECT_ROOT)
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+import argparse
+
+parser = argparse.ArgumentParser(description="Launch DRISHTI Dashboard + Camera Window")
+parser.add_argument("--camera", type=int, default=int(os.environ.get("DMS_CAMERA_INDEX", 0)), help="Webcam device index (default: 0)")
+parser.add_argument("--serial", action="store_true", help="Enable Arduino serial bridge on boot")
+parser.add_argument("--port", type=int, default=5000, help="HTTP port (default: 5000)")
+args, _ = parser.parse_known_args()
+
+if args.serial:
+    os.environ["DMS_SERIAL"] = "1"
+if args.camera != 0:
+    os.environ["DMS_CAMERA_INDEX"] = str(args.camera)
 
 # ── 1. Import Flask app and its shared runtime ────────────────────────────
 from app import app as flask_app, runtime as get_runtime
 
 def run_flask():
     try:
-        flask_app.run(host="0.0.0.0", port=5000, debug=False, threaded=True, use_reloader=False)
+        flask_app.run(host="0.0.0.0", port=args.port, debug=False, threaded=True, use_reloader=False)
     except Exception as e:
         print(f"[Flask error] {e}")
 
@@ -34,7 +51,7 @@ flask_thread = threading.Thread(target=run_flask, daemon=True)
 flask_thread.start()
 
 # Wait for Flask to fully start
-print("[INFO] Starting Flask server...")
+print(f"[INFO] Starting Flask server on port {args.port}...")
 time.sleep(2.5)
 
 # ── 2. Get the shared runtime and start live vision ───────────────────────
@@ -123,7 +140,7 @@ try:
         # ESC to close camera window only
         key = cv2.waitKey(1) & 0xFF
         if key == 27:
-            print("\n[INFO] Camera window closed. Dashboard still LIVE at http://127.0.0.1:5000")
+            print(f"\n[INFO] Camera window closed. Dashboard still LIVE at http://127.0.0.1:{args.port}")
             cv2.destroyAllWindows()
             cv2_named_window = False
             # Keep main thread alive so Flask continues

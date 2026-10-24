@@ -5,18 +5,23 @@ Exhibition demo for the Chief Minister of Bihar. A polished dashboard UI for dro
 ## Quick Start
 
 ```bash
-cd drowsiness_test
-source venv/bin/activate
-python app.py
+# 1. Activate environment
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# 2. Run the unified launcher (Dashboard + Live Camera Window in sync)
+python launch_adas_dashboard.py
+
+# Or run just the dashboard web console:
+# python app.py --live --serial
 ```
 
-Open http://127.0.0.1:5000 in a browser.
+Open http://127.0.0.1:5000 in your browser.
 
-## Modes
+### Command Line Options
 
-- **Synthetic demo** (default) — safe for exhibitions; no camera or serial hardware needed.
-- **Live camera** — opt-in via the "Enable live vision" button (requires OpenCV + MediaPipe).
-- **Arduino bridge** — simulated by default; connect a Uno at 9600 baud for real actuator control.
+- `--camera <index>`: Select camera (default: `0`, or set `DMS_CAMERA_INDEX=1`)
+- `--serial`: Auto-connect to Arduino Uno (auto-detects `/dev/ttyUSB*`, `/dev/ttyACM*`, or `COM*` on Windows)
+- `--port <port>`: Change dashboard port (default: `5000`)
 
 ## Views
 

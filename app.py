@@ -63,12 +63,14 @@ app.config.update(
 
 
 class Runtime:
-    def __init__(self, serial_enabled: bool = False) -> None:
+    def __init__(self, serial_enabled: bool = False, camera_index: int | None = None) -> None:
+        if camera_index is None:
+            camera_index = int(os.environ.get("DMS_CAMERA_INDEX", "0"))
         self.telegram = TelegramUplink()
         self.state = DMSState(telegram_configured=self.telegram.enabled)
         self.copilot = CopilotService()
         self.hardware = SerialBridge(enabled=serial_enabled)
-        self.vision = VisionWorker(MODEL_PATH, camera_index=0, on_metrics=self.state.update_vision_metrics)
+        self.vision = VisionWorker(MODEL_PATH, camera_index=camera_index, on_metrics=self.state.update_vision_metrics)
         self.vision_lock = threading.Lock()
         self._stop = threading.Event()
         self.started_at = time.time()
@@ -441,11 +443,14 @@ def main() -> None:
     parser.add_argument("--host", default="0.0.0.0", help="Bind address (default: 0.0.0.0)")
     parser.add_argument("--port", type=int, default=5000, help="HTTP port (default: 5000)")
     parser.add_argument("--serial", action="store_true", help="Enable Arduino serial bridge on boot")
+    parser.add_argument("--camera", type=int, default=0, help="Webcam device index (default: 0)")
     parser.add_argument("--live", action="store_true", help="Start the camera pipeline immediately")
     args = parser.parse_args()
 
     if args.serial:
         os.environ["DMS_SERIAL"] = "1"
+    if args.camera != 0:
+        os.environ["DMS_CAMERA_INDEX"] = str(args.camera)
     rt = runtime()
     if args.live:
         rt.state.stop_scenario(reset_incident=True)

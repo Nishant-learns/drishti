@@ -8,6 +8,8 @@ operator explicitly switches to Live Vision.
 from __future__ import annotations
 
 import math
+import os
+import sys
 import threading
 import time
 from collections import deque
@@ -83,8 +85,19 @@ class VisionWorker:
         camera_index: int = 0,
         on_metrics: Callable[[dict[str, Any]], None] | None = None,
     ) -> None:
-        self.model_path = str(model_path)
-        self.camera_index = camera_index
+        model_p = Path(model_path)
+        if not model_p.exists():
+            fallback = Path(__file__).resolve().parent.parent / model_p.name
+            if fallback.exists():
+                model_p = fallback
+            elif (Path.cwd() / model_p.name).exists():
+                model_p = Path.cwd() / model_p.name
+        self.model_path = str(model_p.resolve())
+        env_cam = os.environ.get("DMS_CAMERA_INDEX")
+        if env_cam is not None and env_cam.strip().isdigit():
+            self.camera_index = int(env_cam.strip())
+        else:
+            self.camera_index = camera_index
         self.on_metrics = on_metrics
         self.thread: threading.Thread | None = None
         self.running = False
@@ -145,8 +158,9 @@ class VisionWorker:
         cap = None
         landmarker = None
         try:
-            cap = cv2.VideoCapture(self.camera_index, cv2.CAP_V4L2)
-            if not cap.isOpened():
+            if hasattr(cv2, "CAP_V4L2") and sys.platform.startswith("linux"):
+                cap = cv2.VideoCapture(self.camera_index, cv2.CAP_V4L2)
+            if cap is None or not cap.isOpened():
                 cap = cv2.VideoCapture(self.camera_index)
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)

@@ -7,14 +7,22 @@ import cv2
 import numpy as np
 import requests
 
-os.chdir("/home/nishant/drowsiness_test")
-sys.path.insert(0, "/home/nishant/drowsiness_test")
+from pathlib import Path
+
+# Ensure project directory is resolved dynamically
+PROJECT_ROOT = Path(__file__).resolve().parent
+os.chdir(PROJECT_ROOT)
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from dms.vision import VisionWorker
 
+MODEL_PATH = PROJECT_ROOT / "face_landmarker.task"
+camera_index = int(os.environ.get("DMS_CAMERA_INDEX", 0))
+
 vw = VisionWorker(
-    "/home/nishant/drowsiness_test/face_landmarker.task",
-    camera_index=0,
+    MODEL_PATH,
+    camera_index=camera_index,
     on_metrics=lambda m: None,
 )
 vw.start()

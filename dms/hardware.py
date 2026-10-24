@@ -46,7 +46,32 @@ class SerialBridge:
     def _candidates(self) -> list[str]:
         if self.preferred_port:
             return [self.preferred_port]
-        return sorted(glob.glob("/dev/ttyACM*") + glob.glob("/dev/ttyUSB*"))
+        ports: list[str] = []
+        if serial is not None:
+            try:
+                import serial.tools.list_ports
+                com_ports = serial.tools.list_ports.comports()
+                # Prioritize USB / ACM / Arduino devices
+                usb_ports = [
+                    p.device for p in com_ports
+                    if "usb" in p.device.lower()
+                    or "acm" in p.device.lower()
+                    or "arduino" in (p.description or "").lower()
+                    or "usb" in (p.description or "").lower()
+                    or p.device.upper().startswith("COM")
+                ]
+                other_ports = [p.device for p in com_ports if p.device not in usb_ports]
+                ports = usb_ports + other_ports
+            except Exception:
+                ports = []
+        if not ports:
+            ports = sorted(
+                glob.glob("/dev/ttyACM*")
+                + glob.glob("/dev/ttyUSB*")
+                + glob.glob("/dev/cu.usb*")
+                + glob.glob("/dev/tty.usb*")
+            )
+        return ports
 
     def connect(self) -> dict[str, Any]:
         if not self.enabled:
